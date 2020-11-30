@@ -3,7 +3,18 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index');
 });
+
+router.get('/signup', function(req,res){
+  res.render('signup');
+})
+router.post('/signup',function(req,res){
+  
+})
+
+router.get('/signin', function(req,res){
+  res.render('signin');
+})
 
 module.exports = router;

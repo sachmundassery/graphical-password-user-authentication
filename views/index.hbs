@@ -1,2 +1,44 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div class="center">
+    <table>
+        <thead>
+            <tr>
+                <th id="signin"><a href="">Sign In</a></th>
+                <th id="signup"><a href="/signup">Sign Up</a></th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+
+<style>
+    .center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10px;
+    }
+
+    #signin {
+        background: red;
+        padding: 75px;
+        color: white;
+
+    }
+
+    #signup {
+        background: black;
+        color: white;
+        padding: 75px;
+
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+</style>
