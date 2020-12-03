@@ -1,33 +1,33 @@
 <form action="admin" enctype="multipart/form-data" method="POST">
     <label for="exampleFormControlFile1">Selet one category</label>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="category1" >
+        <input class="form-check-input" type="radio" name="category" id="exampleRadios1" value="category1">
         <label class="form-check-label" for="exampleRadios1">
-            Default radio
+            Category 1
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="category2" >
+        <input class="form-check-input" type="radio" name="category" id="exampleRadios1" value="category2">
         <label class="form-check-label" for="exampleRadios1">
-            Default radio
+            Category 2
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="category3" >
+        <input class="form-check-input" type="radio" name="category" id="exampleRadios1" value="category3">
         <label class="form-check-label" for="exampleRadios1">
-            Default radio
+            Category 3
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="category4" >
+        <input class="form-check-input" type="radio" name="category" id="exampleRadios1" value="category4">
         <label class="form-check-label" for="exampleRadios1">
-            Default radio
+            Category 4
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="category5" >
+        <input class="form-check-input" type="radio" name="category" id="exampleRadios1" value="category5">
         <label class="form-check-label" for="exampleRadios1">
-            Default radio
+            Category 5
         </label>
     </div>
 
@@ -39,14 +39,13 @@
 </form>
 
 <table class="table mt-5" id="productsTable">
-<tbody>
-      {{#each category}}
-      <tr>
-          <th>{{this.exampleRadios}}</th>
-          <th><img style="width: 50px; height:50px" src="/images/{{this._id}}.jpg" alt=""></th>
-      </tr>
- {{/each}} 
-    
-  </tbody>
-</table>
+    <tbody>
+        {{#each category}}
+        <tr>
+            <th>{{this.category}}</th>
+            <th><img style="width: 50px; height:50px" src="/images/{{this._id}}.jpg" alt=""></th>
+        </tr>
+        {{/each}}
 
+    </tbody>
+</table>

@@ -1,0 +1,12 @@
+<h2>Select images</h2>
+<table class="table mt-5" id="productsTable">
+    <tbody>
+        {{#each category}}
+        <tr>
+            <th>{{this.category}}</th>
+            <th><img style="width: 50px; height:50px" src="/images/{{this._id}}.jpg" alt=""></th>
+        </tr>
+        {{/each}}
+
+    </tbody>
+</table>

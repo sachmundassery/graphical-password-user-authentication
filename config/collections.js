@@ -1,3 +1,4 @@
 module.exports={
-    CATEGORY:'category'
+    CATEGORY:'category',
+    USER_COLLECTIONS:'user',
 }

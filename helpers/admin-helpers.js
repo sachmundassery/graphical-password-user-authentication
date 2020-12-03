@@ -1,5 +1,6 @@
 var db=require('../config/connection')
 var collection=require('../config/collections')
+
 module.exports={
     addCategory:function(category,callback){
         console.log(category);

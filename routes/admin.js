@@ -5,11 +5,11 @@ var adminHelpers=require('../helpers/admin-helpers')
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   adminHelpers.getAllCategories().then(function(category){
-    console.log(category);
+    //console.log(category);
     res.render('admin',{category});
   })
   
-});
+}); 
 router.post('/',function(req,res){
  
   adminHelpers.addCategory(req.body,function(id){
