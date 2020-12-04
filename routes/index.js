@@ -31,6 +31,13 @@ router.post('/signup3', function (req, res, next) { // when signup2 is submitted
   })
 })
 
+router.post('/endRegistration',function(req,res,next){
+  userHelpers.doneSignup(req.body).then(function(){
+    res.redirect('/')
+  })
+  
+})
+
 router.get('/signin', function (req, res) {
   res.render('signin');
 })
