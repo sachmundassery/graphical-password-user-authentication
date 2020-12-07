@@ -23,8 +23,9 @@ module.exports = {
 
     },
     doSignup2: function (userData2, id) {
-        userId=id
+        userId = id
         categorySelected = userData2.category
+        console.log(categorySelected);
         console.log("^^^^", categorySelected);
         return new Promise(async function (resolve, reject) {
             db.get().collection(collections.USER_COLLECTIONS).updateOne({ _id: id }, { $set: { 'category': userData2.category } }).then(function (data) {
@@ -50,23 +51,49 @@ module.exports = {
                 }
             }
 
-            for (i = 0; i < categorySent.length; i++) {
-                //console.log("%%%%", categoryDB[k].category);
-                function generateAlphanumeric() {
+            // code to generate random non repeating alphanumeric values
+            let arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
 
+            function randomGenerator() {
 
-                    arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
-                    len = 1
-                    var ans = '';
-                    for (var index = len; index > 0; index--) {
-                        ans +=
-                            arr[Math.floor(Math.random() * arr.length)];
-                    }
-                    return ans;
+                var len = 1
+                var ans = '';
+                for (var index = len; index > 0; index--) {
+                    ans +=
+                        arr[Math.floor(Math.random() * arr.length)];
                 }
-                var num = generateAlphanumeric()
-                categorySent[i].alpha = num
+                return ans
+
             }
+            var new_arr = []
+            var flag = true
+            for (index = 0; index < categorySent.length; index++) {
+                var result = randomGenerator()
+
+                if (new_arr.length == 0) {
+                    categorySent[index].alpha = result
+                    new_arr.push(result)
+                    continue
+                }
+                else {
+                    for (i = 0; i < new_arr.length; i++) {
+
+                        if (new_arr[i] == result) {
+                            flag = false
+                            index--
+                            break
+                        }
+                    }
+                }
+                if (flag == true) {
+                    categorySent[index].alpha = result
+                    new_arr.push(result)
+                    continue
+                }
+                flag = true
+
+            }
+
             categoryReceived = categorySent
 
             //console.log(categorySent);
@@ -87,12 +114,48 @@ module.exports = {
                 }
 
             }
+            var imageId = []
+            for (i = 0; i < userDetails.length; i++) {
+                imageId.push(userDetails[i]._id)
+            }
             console.log(userDetails);
-            bcryptPwd = await bcrypt.hash(pwd,10)
-            db.get().collection(collections.USER_COLLECTIONS).updateOne({ _id: userId }, { $set: { 'password':bcryptPwd } }).then(function (data) {
+            console.log(pwd);
+            bcryptPwd = await bcrypt.hash(pwd, 10)
+            db.get().collection(collections.USER_COLLECTIONS).updateOne({ _id: userId }, { $set: { 'password': bcryptPwd, 'imageId': imageId } }).then(function (data) {
+                userDetails = []
                 resolve()
             })
         })
+
+    },
+    doSignin1: function (data1) {
+        return new Promise(async function (resolve, reject) {
+            console.log(data1);
+            let loginStatus = false
+            let response = {}
+            let user = await db.get().collection(collection.USER_COLLECTIONS).findOne({ name: data1.name })
+            //let bcryptPwd = await bcrypt.hash(data1.password, 10)
+            //let pwd = await db.get().collection(collection.USER_COLLECTIONS).findOne({ password: bcryptPwd })
+
+            if(user){
+                bcrypt.compare(data1.password,user.password).then(function(status){
+                    if(status){
+                        console.log("success");
+                        response.user=user
+                        response.status=true
+                        resolve(response)
+                    }
+                    else{
+                        console.log("Login Failed");
+                        resolve({status: false})
+                    }
+                })
+            }
+        })
+
+    },
+    doSignin2:function(){
+        
 
     }
 
