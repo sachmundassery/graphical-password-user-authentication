@@ -44,9 +44,10 @@ router.get('/signin1', function (req, res) {
 router.post('/signin2', function (req, res) {
   userHelpers.doSignin1(req.body).then(function (response) {
     if (response.status) {
-      //userHelpers.doSignin2().then(function(){
-        res.render('signin2')
-      //})
+      userHelpers.doSignin2().then(function (alphaImageArray) {
+        //console.log(imageArray);
+        res.render('signin2',{alphaImageArray})
+      })
     }
     else {
       console.log("Invalid Username or Password");
