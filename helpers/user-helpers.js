@@ -128,6 +128,7 @@ module.exports = {
             let response = {}
             userSignedIn = await db.get().collection(collection.USER_COLLECTIONS).findOne({ name: data1.name })
             // this user contains all details of the user who successfully completed phase 1 of login process
+            // console.log("@@@",userSignedIn['_id'].length);
             if (userSignedIn) {
                 bcrypt.compare(data1.password, userSignedIn.password).then(async function (status) {
                     if (status) {
@@ -142,31 +143,26 @@ module.exports = {
                     }
                 })
             }
+            else {
+                console.log("Login Failed");
+                resolve({ status: false })
+            }
         })
 
     },
-    doSignin2: function () { 
+    doSignin2: function () {
         return new Promise(async function (resolve, reject) {
             var alphaImageArray = []
-            var imageArray=[]
-            var alphaArray=[]
-            //alphaImageArray =[]
+            var imageArray = []
+            var alphaArray = []
+
             var categoryCollection = await db.get().collection(collection.CATEGORY).find({}).toArray()
-            for(i=0; i< categoryCollection.length; i=i+2){
+            for (i = 0; i < categoryCollection.length; i++) {
                 totalImageArray.push(categoryCollection[i]._id)
             }
-            for(i=0; i< userSignedIn.length; i++){
-                totalImageArray.push(userSignedIn[i]._id)
-            }
-            for(i=0; i< userSignedIn.length; i++){ 
-                totalImageArray.push(userSignedIn[i]._id)
-            }
-            console.log(totalImageArray);
-            
-            
 
-            //code for creating random set of images
-            
+            //....................................................................
+            //code for creating array with all images
             function randomGenerator1() {
                 var len = 1
                 var ans = '';
@@ -178,12 +174,11 @@ module.exports = {
             }
             var new_arr = []
             var flag = true
-            for (index = 0; index < 10; index++) {
+            for (index = 0; index < 6; index++) {
                 var result = randomGenerator1()
 
-                if (imageArray.length == 0) {
+                if (new_arr.length == 0) {
                     imageArray[index] = result
-                    //imageArraySent.push(result)
                     new_arr.push(result)
                     continue
                 }
@@ -199,16 +194,65 @@ module.exports = {
                 }
                 if (flag == true) {
                     imageArray[index] = result
-                    //imageArray.push(result)
                     new_arr.push(result)
                     continue
                 }
                 flag = true
             }
+            //....................................................................
+            // code to add user selected images
 
-            // code to generate random alphanumeric values 
-            
-            
+            for (i = 0; i < (userSignedIn.imageId.length); i++) {
+                var a = ''
+                a = a + userSignedIn.imageId[i]
+                imageArray.push(a)
+            }
+            console.log(imageArray);
+
+            //....................................................................
+            // code to suffle user selected images
+            function randomGenerator11() {
+                var len = 1
+                var ans = '';
+                for (var index = len; index > 0; index--) {
+                    ans +=
+                        imageArray[Math.floor(Math.random() * imageArray.length)];
+                }
+                return ans
+            }
+            var new_arr = []
+            var imageArraySent = []
+            var flag = true
+            for (index = 0; index < 9; index++) {
+                var result11 = randomGenerator11()
+
+                if (new_arr.length == 0) {
+                    imageArraySent.push(result11)
+                    
+                    new_arr.push(result11)
+                    continue
+                }
+                else {
+                    for (i = 0; i < new_arr.length; i++) {
+                        //console.log("*****");
+                        if (new_arr[i] == result11) {
+                            flag = false
+                            index--
+                            break
+                        }
+                    }
+                }
+                if (flag == true) {
+                    imageArraySent.push(result11)
+
+                    new_arr.push(result11)
+                    continue
+                }
+                flag = true
+            }
+
+            //....................................................................
+            // code to generate random alphanumeric values for the images
             function randomGenerator2() {
                 let arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
                 var len = 1
@@ -221,8 +265,8 @@ module.exports = {
             }
             var new_arr = []
             var flag = true
-            for (index = 0; index < 10; index++) {
-                var result1 = randomGenerator2()
+            for (index = 0; index < 9; index++) {
+                var result1 = randomGenerator2() 
 
                 if (new_arr.length == 0) {
                     alphaArray[index] = result1
@@ -247,231 +291,21 @@ module.exports = {
                 flag = true
             }
 
-           
-            //.......................................................
+
+            //....................................................................
+            // code to create array of objects, with imageId and alpha
             function ImageObj(imageId, alpha) {
                 this.imageId = imageId
                 this.alpha = alpha
             }
 
 
-            for (let i = 0; i < imageArray.length; i++) {
-                alphaImageArray.push(new ImageObj(imageArray[i], alphaArray[i]));
+            for (let i = 0; i < imageArraySent.length; i++) {
+                alphaImageArray.push(new ImageObj(imageArraySent[i], alphaArray[i]));
             }
             console.log(alphaImageArray);
             resolve(alphaImageArray)
-        })    
+        })
     }
 }
 
-/*
-create an array that contains the names of all the categories in the category collection
-then run a loop for each category
-take the first category, then run the mongodb query to fetch the fields of that category and fetch the images and insert into an array
-do the same for each category with that loop
-now  you will get an array that contains many images
-*/
-
-
-            /*
-                        
-                        //.......................................................
-                        //code for creating random set of images
-            
-                        function randomGenerator1() {
-                            var len = 1
-                            var ans = '';
-                            for (var index = len; index > 0; index--) {
-                                ans +=
-                                    totalImageArray[Math.floor(Math.random() * totalImageArray.length)];
-                            }
-                            return ans
-                        }
-                        var new_arr = []
-                        var flag = true
-                        for (index = 0; index < 7; index++) {
-                            var result = randomGenerator1()
-            
-                            if (imageArray.length == 0) {
-                                imageArray[index] = result
-                                //imageArraySent.push(result)
-                                new_arr.push(result)
-                                continue
-                            }
-                            else {
-                                for (i = 0; i < new_arr.length; i++) {
-            
-                                    if (new_arr[i] == result) {
-                                        flag = false
-                                        index--
-                                        break
-                                    }
-                                }
-                            }
-                            if (flag == true) {
-                                imageArray[index] = result
-                                //imageArray.push(result)
-                                new_arr.push(result)
-                                continue
-                            }
-                            flag = true
-                        }
-            
-            
-            */
-
-
-            /*
-            
-            //.......................................................
-                        // code to assign random alphanumeric values to random set of images
-            
-            
-                        function randomGenerator2() {
-                            let arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
-                            var len = 1
-                            var ans = '';
-                            for (var index = len; index > 0; index--) {
-                                ans +=
-                                    arr[Math.floor(Math.random() * arr.length)];
-                            }
-                            return ans
-                        }
-                        var new_arr = []
-                        var flag = true
-                        for (index = 0; index < 7; index++) {
-                            var result1 = randomGenerator2()
-            
-                            if (new_arr.length == 0) {
-                                alphanumericArray[index] = result1
-                                new_arr.push(result1)
-                                continue
-                            }
-                            else {
-                                for (i = 0; i < new_arr.length; i++) {
-            
-                                    if (new_arr[i] == result1) {
-                                        flag = false
-                                        index--
-                                        break
-                                    }
-                                }
-                            }
-                            if (flag == true) {
-                                alphanumericArray[index] = result1
-                                new_arr.push(result1)
-                                continue
-                            }
-                            flag = true
-                        }
-            
-            */
-
-
-
-
-            //console.log(imageArray);
-            //console.log(alphanumericArray);
-            //alphaImageArray['id']=imageArray[0]
-            /*
-            for(i=0;i<7; i++){
-                alphaImageArray[imageArray[i]]=alphanumericArray[i]
-            }
-            */
-            //console.log(alphaImageArray);
-
-
-
-
-            //........................................................................
-
-            /*
-function randomGenerator2() {
-                let arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
-                var len = 1
-                var ans = '';
-                for (var index = len; index > 0; index--) {
-                    ans +=
-                        arr[Math.floor(Math.random() * arr.length)];
-                }
-                return ans
-            }
-            var new_arr = []
-            var flag = true
-            for (index = 0; index < categoryCollection.length; index++) {
-                var result2 = randomGenerator2()
-
-                if (new_arr.length == 0) {
-                    categoryCollection[index].alpha = result2
-                    new_arr.push(result2)
-                    continue
-                }
-                else {
-                    for (i = 0; i < new_arr.length; i++) {
-
-                        if (new_arr[i] == result2) {
-                            flag = false
-                            index--
-                            break
-                        }
-                    }
-                }
-                if (flag == true) {
-                    categoryCollection[index].alpha = result2
-                    new_arr.push(result2)
-                    continue
-                }
-                flag = true
-            }        
-            var tempArr=[]
-            for (i =0; i < (userSignedIn.imageId.length); i++) {
-                tempArr.push(categoryCollection[i])
-            }
-            for (i =0; i < (userSignedIn.imageId.length); i++) {
-                tempArr[i]._id=(userSignedIn.imageId[i])             
-            }
-            for (i =0; i < (userSignedIn.imageId.length); i++) {
-                categoryCollection.push(tempArr[i])             
-            }       
-            console.log("^^^^", categoryCollection);
-            
-
-            function randomGenerator1() {
-                var len = 1
-                var ans 
-                for (var index = len; index > 0; index--) {
-                    ans =
-                    categoryCollection[Math.floor(Math.random() * categoryCollection.length)];
-                }
-                return ans
-            }
-            var new_arr1 = []
-            var flag1 = true
-            for (index = 0; index < 7; index++) {
-                var result = randomGenerator1()
-                //console.log("######################");
-
-                if (alphaImageArray.length == 0) {
-                    console.log("######################");
-                    console.log(result);
-                    alphaImageArray.push(result)
-                    new_arr1.push(result)
-                    continue
-                }
-                else {
-                    for (i = 0; i < new_arr1.length; i++) {
-                        if (new_arr1[i] == result) {
-                            flag1 = false
-                            index--
-                            break
-                        }
-                    }
-                }
-                if (flag1 == true) {
-                    alphaImageArray.push(result)
-                    new_arr1.push(result)
-                    continue
-                }
-                flag1 = true
-            }    
-            */
