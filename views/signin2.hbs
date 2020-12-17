@@ -1,19 +1,25 @@
 <h2>Select images</h2>
 
-    <table class="table mt-5" id="productsTable">
-        <tbody>
-            {{#each alphaImageArray}}
-            <tr>
-                
-                <th>
-                <td><img style="width: 100px; height:100px" src="/images/{{this.imageId}}.jpg" alt=""></td>
-                </th>
-                <th>
-                <td>
-                    {{this.alpha}}
-                </td>
-                </th>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+<table class="table mt-5" id="productsTable">
+    <tbody>
+        {{#each alphaImageArray}}
+        <tr>
+
+            <th>
+            <td><img style="width: 100px; height:100px" src="/images/{{this.imageId}}.jpg" alt=""></td>
+            </th>
+            <th>
+            <td>
+                {{this.alpha}}
+            </td>
+            </th>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+    <form action="welcome" method="POST">
+        <label for="">Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+        <button type="submit" class="btn btn-primary float-right">Done</button>
+    </form> 

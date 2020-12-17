@@ -9,6 +9,8 @@ var userDetails = []
 var userId
 var totalImageArray = []
 var userSignedIn
+var randomPass = ''
+var userSelectedImages = []
 
 
 
@@ -125,27 +127,27 @@ module.exports = {
         return new Promise(async function (resolve, reject) {
             console.log(data1);
             let loginStatus = false
-            let response = {}
             userSignedIn = await db.get().collection(collection.USER_COLLECTIONS).findOne({ name: data1.name })
             // this user contains all details of the user who successfully completed phase 1 of login process
             // console.log("@@@",userSignedIn['_id'].length);
             if (userSignedIn) {
                 bcrypt.compare(data1.password, userSignedIn.password).then(async function (status) {
                     if (status) {
-                        console.log("success");
-                        response.user = userSignedIn
-                        response.status = true
-                        resolve(response)
+                        console.log("success",status);
+ 
+                        loginStatus = true
+                        resolve(loginStatus)
                     }
                     else {
                         console.log("Login Failed");
-                        resolve({ status: false })
+                        loginStatus = false
+                        resolve(loginStatus)
                     }
                 })
             }
             else {
                 console.log("Login Failed");
-                resolve({ status: false })
+                resolve(loginStatus)
             }
         })
 
@@ -199,6 +201,7 @@ module.exports = {
                 }
                 flag = true
             }
+
             //....................................................................
             // code to add user selected images
 
@@ -206,9 +209,8 @@ module.exports = {
                 var a = ''
                 a = a + userSignedIn.imageId[i]
                 imageArray.push(a)
+                userSelectedImages[i] = a
             }
-            console.log(imageArray);
-
             //....................................................................
             // code to suffle user selected images
             function randomGenerator11() {
@@ -228,7 +230,7 @@ module.exports = {
 
                 if (new_arr.length == 0) {
                     imageArraySent.push(result11)
-                    
+
                     new_arr.push(result11)
                     continue
                 }
@@ -266,7 +268,7 @@ module.exports = {
             var new_arr = []
             var flag = true
             for (index = 0; index < 9; index++) {
-                var result1 = randomGenerator2() 
+                var result1 = randomGenerator2()
 
                 if (new_arr.length == 0) {
                     alphaArray[index] = result1
@@ -298,14 +300,86 @@ module.exports = {
                 this.imageId = imageId
                 this.alpha = alpha
             }
-
-
             for (let i = 0; i < imageArraySent.length; i++) {
                 alphaImageArray.push(new ImageObj(imageArraySent[i], alphaArray[i]));
             }
-            console.log(alphaImageArray);
+
+            //...................................................................
+            //code to generate the expected password
+
+            var imgPos = []
+            var totPos = []
+            var reqPos = []
+            for (i = 0; i < imageArraySent.length; i++) {
+                totPos[i] = i
+            }
+
+            f = true
+            for (i = 0; i < userSelectedImages.length; i++) {
+                for (j = 0; j < imageArraySent.length; j++) {
+                    if (userSelectedImages[i] == imageArraySent[j]) {
+                        imgPos.push(j)
+                        break
+                    }
+                }
+
+            }
+            //imgPos.sort();
+            function arr_diff(a1, a2) { // function to get the expected position of images selected
+
+                var a = [], diff = [];
+
+                for (var i = 0; i < a1.length; i++) {
+                    a[a1[i]] = true;
+                }
+
+                for (var i = 0; i < a2.length; i++) {
+                    if (a[a2[i]]) {
+                        delete a[a2[i]];
+                    } else {
+                        a[a2[i]] = true;
+                    }
+                }
+
+                for (var k in a) {
+                    diff.push(k);
+                }
+
+                return diff;
+            }
+
+            var password1 = ''
+            reqPos = arr_diff(totPos, imgPos)
+            console.log(reqPos);
+            console.log(alphaImageArray[reqPos[1]].alpha);
+            for (i = 0; i < reqPos.length; i++) {
+                password1 += alphaImageArray[reqPos[i]].alpha
+            }
+            randomPass = password1
+            //console.log(password1);
+            console.log(randomPass);
+
             resolve(alphaImageArray)
         })
+    },
+    doneSignin: function (data2) {
+        return new Promise(async function (resolve, reject) {
+            console.log("####", data2.password);
+            let status = false
+
+
+            if (data2.password == randomPass) {
+                console.log("success123");
+                status = true
+                resolve(status)
+            }
+            else {
+                console.log("Login Failed");
+                status = false
+                resolve(status)
+            }
+        })
+
     }
 }
 
