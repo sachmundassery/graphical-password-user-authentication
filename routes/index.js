@@ -41,6 +41,7 @@ router.post('/endRegistration', function (req, res, next) {
 router.get('/signin1', function (req, res) {
   res.render('signin1');
 })
+
 router.post('/signin2', function (req, res) {
   userHelpers.doSignin1(req.body).then(function (status) {
     //console.log("index.js status",status);

@@ -1,6 +1,9 @@
+<ul class="list-group p-2"></ul>
 <h2>Select min of 4 images by typing the corresponding alphanumeric value in the textbox</h2>
 
+<li class="list-group-item p-3">
     <table class="table mt-5" id="productsTable">
+
         <tbody>
             {{#each category}}
             <tr>
@@ -17,11 +20,15 @@
                 </th>
             </tr>
             {{/each}}
+
         </tbody>
     </table>
+    <form action="endRegistration" method="POST">
+        <label for="">Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+        <button type="submit" class="btn btn-primary float-left">Done</button>
+    </form>
 
-<form action="endRegistration" method="POST">
-    <label for="">Password</label>
-    <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
-    <button type="submit" class="btn btn-primary float-right">Done</button>
-</form>
+</li>
+
+</ul>

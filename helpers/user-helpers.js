@@ -129,12 +129,11 @@ module.exports = {
             let loginStatus = false
             userSignedIn = await db.get().collection(collection.USER_COLLECTIONS).findOne({ name: data1.name })
             // this user contains all details of the user who successfully completed phase 1 of login process
-            // console.log("@@@",userSignedIn['_id'].length);
             if (userSignedIn) {
                 bcrypt.compare(data1.password, userSignedIn.password).then(async function (status) {
                     if (status) {
-                        console.log("success",status);
- 
+                        console.log("success", status);
+
                         loginStatus = true
                         resolve(loginStatus)
                     }
@@ -153,41 +152,42 @@ module.exports = {
 
     },
     doSignin2: function () {
-        return new Promise(async function (resolve, reject) {
+        return new Promise( async function (resolve, reject) {
+            
             var alphaImageArray = []
             var imageArray = []
             var alphaArray = []
 
-            var categoryCollection = await db.get().collection(collection.CATEGORY).find({}).toArray()
+            var categoryCollection =await db.get().collection(collection.CATEGORY).find({}).toArray()
             for (i = 0; i < categoryCollection.length; i++) {
                 totalImageArray.push(categoryCollection[i]._id)
             }
-
+            
             //....................................................................
             //code for creating array with all images
             function randomGenerator1() {
                 var len = 1
                 var ans = '';
-                for (var index = len; index > 0; index--) {
+                for (y = len; y > 0; y--) {
                     ans +=
                         totalImageArray[Math.floor(Math.random() * totalImageArray.length)];
                 }
                 return ans
             }
-            var new_arr = []
+            var new_arr1 = []
             var flag = true
-            for (index = 0; index < 6; index++) {
+            for (index = 0; index < 8; index++) {
                 var result = randomGenerator1()
 
-                if (new_arr.length == 0) {
+                if (new_arr1.length == 0) {
                     imageArray[index] = result
-                    new_arr.push(result)
+                    new_arr1.push(result)
                     continue
                 }
                 else {
-                    for (i = 0; i < new_arr.length; i++) {
+                    for (i = 0; i < new_arr1.length; i++) {
 
-                        if (new_arr[i] == result) {
+                        if (new_arr1[i] == result) {
                             flag = false
                             index--
                             break
@@ -195,13 +195,13 @@ module.exports = {
                     }
                 }
                 if (flag == true) {
-                    imageArray[index] = result
-                    new_arr.push(result)
+                    imageArray[index] = result 
+                    new_arr1.push(result)
                     continue
                 }
                 flag = true
             }
-
+                       
             //....................................................................
             // code to add user selected images
 
@@ -211,47 +211,54 @@ module.exports = {
                 imageArray.push(a)
                 userSelectedImages[i] = a
             }
+           
+            // till here working
+            
             //....................................................................
             // code to suffle user selected images
+            var new_arr2 = []
+            var imageArraySent = []
+            var f = true
             function randomGenerator11() {
                 var len = 1
                 var ans = '';
-                for (var index = len; index > 0; index--) {
+                for (l= len; l > 0; l--) {
                     ans +=
                         imageArray[Math.floor(Math.random() * imageArray.length)];
                 }
                 return ans
             }
-            var new_arr = []
-            var imageArraySent = []
-            var flag = true
+            
             for (index = 0; index < 9; index++) {
                 var result11 = randomGenerator11()
 
-                if (new_arr.length == 0) {
-                    imageArraySent.push(result11)
+                if (new_arr2.length == 0) {
+                    imageArraySent[index]=result11
 
-                    new_arr.push(result11)
+                    new_arr2.push(result11)
                     continue
                 }
                 else {
-                    for (i = 0; i < new_arr.length; i++) {
-                        //console.log("*****");
-                        if (new_arr[i] == result11) {
-                            flag = false
+                    for (i = 0; i < new_arr2.length; i++) {
+                        
+                        if (new_arr2[i] == result11) {
+                            // sometimes infinite loop here
+                            //console.log("*****");
+                            f = false
                             index--
                             break
                         }
                     }
                 }
-                if (flag == true) {
-                    imageArraySent.push(result11)
-
-                    new_arr.push(result11)
+                if (f == true) {
+                    //imageArraySent.push(result11)
+                    imageArraySent[index]=result11
+                    new_arr2.push(result11)
                     continue
                 }
-                flag = true
+                f = true
             }
+            console.log("INSIDE DO SIGNIN 2");
 
             //....................................................................
             // code to generate random alphanumeric values for the images
@@ -259,14 +266,14 @@ module.exports = {
                 let arr = '12345abcde!@#$%^&*()67890fghijklmnopqrstuvwxyz'
                 var len = 1
                 var ans = '';
-                for (var index = len; index > 0; index--) {
+                for (indexi = len; indexi > 0; indexi--) {
                     ans +=
                         arr[Math.floor(Math.random() * arr.length)];
                 }
                 return ans
             }
             var new_arr = []
-            var flag = true
+            var fl = true
             for (index = 0; index < 9; index++) {
                 var result1 = randomGenerator2()
 
@@ -279,20 +286,20 @@ module.exports = {
                     for (i = 0; i < new_arr.length; i++) {
 
                         if (new_arr[i] == result1) {
-                            flag = false
+                            fl = false
                             index--
                             break
                         }
                     }
                 }
-                if (flag == true) {
+                if (fl == true) {
                     alphaArray[index] = result1
                     new_arr.push(result1)
                     continue
                 }
-                flag = true
+                fl = true
             }
-
+            
 
             //....................................................................
             // code to create array of objects, with imageId and alpha
@@ -306,6 +313,8 @@ module.exports = {
 
             //...................................................................
             //code to generate the expected password
+
+            
 
             var imgPos = []
             var totPos = []

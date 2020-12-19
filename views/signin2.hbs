@@ -17,9 +17,14 @@
         {{/each}}
     </tbody>
 </table>
-
-    <form action="welcome" method="POST">
-        <label for="">Password</label>
-        <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
-        <button type="submit" class="btn btn-primary float-right">Done</button>
-    </form> 
+<br>
+<br>
+<form action="welcome" method="POST">
+    <div class="input-group mb-3" style="position: fixed;bottom: 0;">
+        <input type="password" class="form-control" name="password" placeholder="Enter Password"
+            aria-label="Recipient's username" aria-describedby="basic-addon2" required>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary float-right">Done</button>
+        </div>
+    </div>
+</form>
