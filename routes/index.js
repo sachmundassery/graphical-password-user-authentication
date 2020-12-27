@@ -42,16 +42,31 @@ router.get('/signin1', function (req, res) {
   res.render('signin1');
 })
 
-router.post('/signin2', function (req, res) {
+router.post('/signin_email', function (req, res) {
   userHelpers.doSignin1(req.body).then(function (status) {
     //console.log("index.js status",status);
     if (status) {
+      res.render('email_verification')
+    }
+    else {
+      console.log("Invalid Username or Password");
+      res.redirect('/')
+    }
+  })
+
+})
+
+
+router.post('/signin2', function (req, res) {
+  userHelpers.email_verification(req.body).then(function (status1) {
+    console.log("^^^^^^^^^",status1);
+    if (status1) {
       userHelpers.doSignin2().then(function (alphaImageArray) {
         res.render('signin2', { alphaImageArray })
       })
     }
     else {
-      console.log("Invalid Username or Password");
+      console.log("Invalid PIN");
       res.redirect('/')
     }
   })

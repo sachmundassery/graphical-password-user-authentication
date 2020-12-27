@@ -1,3 +1,4 @@
+require('dotenv').config();
 var db = require('../config/connection')
 var collection = require('../config/collections')
 const collections = require('../config/collections')
@@ -11,6 +12,7 @@ var totalImageArray = []
 var userSignedIn
 var randomPass = ''
 var userSelectedImages = []
+var pin
 
 
 
@@ -125,14 +127,44 @@ module.exports = {
     },
     doSignin1: function (data1) {
         return new Promise(async function (resolve, reject) {
+            pin = (Math.floor(100000 + Math.random() * 900000)).toString()
             console.log(data1);
+            console.log(pin);
             let loginStatus = false
             userSignedIn = await db.get().collection(collection.USER_COLLECTIONS).findOne({ name: data1.name })
             // this user contains all details of the user who successfully completed phase 1 of login process
+
             if (userSignedIn) {
                 bcrypt.compare(data1.password, userSignedIn.password).then(async function (status) {
                     if (status) {
                         console.log("success", status);
+                        //---------------------------------------------------------
+
+                        var nodemailer = require('nodemailer');
+
+                        var transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: process.env.EMAIL,
+                                pass: process.env.PASSWORD
+                            }
+                        });
+
+                        var mailOptions = {
+                            from: 'dummyresearchmail@gmail.com',
+                            to: userSignedIn.email.toString(),
+                            subject: 'Mail From The Admin',
+                            text: pin
+                        };
+
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                console.log("Error occured : ", error);
+                            } else {
+                                console.log('Email sent: ' + info.response);
+                            }
+                        });
+                        //--------------------------------------------------------- 
 
                         loginStatus = true
                         resolve(loginStatus)
@@ -151,18 +183,36 @@ module.exports = {
         })
 
     },
+    email_verification: function (data3) {
+        return new Promise(async function (resolve, reject) {
+            console.log("---------", data3.password, "-------", pin);
+            let emailStatus = false
+            if (data3.password === pin) {
+                console.log("email verified");
+                emailStatus = true
+                resolve(emailStatus)
+            }
+            else {
+                console.log("PIN not matched");
+                emailStatus = false
+                resolve(emailStatus)
+            }
+        })
+
+
+    },
     doSignin2: function () {
-        return new Promise( async function (resolve, reject) {
-            
+        return new Promise(async function (resolve, reject) {
+
             var alphaImageArray = []
             var imageArray = []
             var alphaArray = []
 
-            var categoryCollection =await db.get().collection(collection.CATEGORY).find({}).toArray()
+            var categoryCollection = await db.get().collection(collection.CATEGORY).find({}).toArray()
             for (i = 0; i < categoryCollection.length; i++) {
                 totalImageArray.push(categoryCollection[i]._id)
             }
-            
+
             //....................................................................
             //code for creating array with all images
             function randomGenerator1() {
@@ -195,13 +245,13 @@ module.exports = {
                     }
                 }
                 if (flag == true) {
-                    imageArray[index] = result 
+                    imageArray[index] = result
                     new_arr1.push(result)
                     continue
                 }
                 flag = true
             }
-                       
+
             //....................................................................
             // code to add user selected images
 
@@ -211,9 +261,9 @@ module.exports = {
                 imageArray.push(a)
                 userSelectedImages[i] = a
             }
-           
+
             // till here working
-            
+
             //....................................................................
             // code to suffle user selected images
             var new_arr2 = []
@@ -222,25 +272,25 @@ module.exports = {
             function randomGenerator11() {
                 var len = 1
                 var ans = '';
-                for (l= len; l > 0; l--) {
+                for (l = len; l > 0; l--) {
                     ans +=
                         imageArray[Math.floor(Math.random() * imageArray.length)];
                 }
                 return ans
             }
-            
+
             for (index = 0; index < 9; index++) {
                 var result11 = randomGenerator11()
 
                 if (new_arr2.length == 0) {
-                    imageArraySent[index]=result11
+                    imageArraySent[index] = result11
 
                     new_arr2.push(result11)
                     continue
                 }
                 else {
                     for (i = 0; i < new_arr2.length; i++) {
-                        
+
                         if (new_arr2[i] == result11) {
                             // sometimes infinite loop here
                             //console.log("*****");
@@ -252,7 +302,7 @@ module.exports = {
                 }
                 if (f == true) {
                     //imageArraySent.push(result11)
-                    imageArraySent[index]=result11
+                    imageArraySent[index] = result11
                     new_arr2.push(result11)
                     continue
                 }
@@ -299,7 +349,7 @@ module.exports = {
                 }
                 fl = true
             }
-            
+
 
             //....................................................................
             // code to create array of objects, with imageId and alpha
@@ -314,7 +364,7 @@ module.exports = {
             //...................................................................
             //code to generate the expected password
 
-            
+
 
             var imgPos = []
             var totPos = []
